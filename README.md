@@ -2,6 +2,9 @@
 
 Веб-приложение для ведения счета теннисных матчей.
 Реализовано на чистых Java Servlets + JSP + JDBC (без Spring/Hibernate).
+##  Live Demo
+ **Попробовать приложение вживую:**  
+ **[http://85.198.64.202/](http://85.198.64.202/)**
 
 ## 🛠 Технологический стек
 - **Java 17**
@@ -18,8 +21,8 @@
 
 1. Клонируйте репозиторий:
    git clone https://github.com/your-username/tennis-scoreboard.git
-   cd tennis-scoreboard
-Соберите проект и запустите контейнеры одной командой:
+2. cd tennis-scoreboard
+3. Соберите проект и запустите контейнеры одной командой:
 # Linux / macOS
 ./mvnw clean package && docker-compose up -d --build
 
