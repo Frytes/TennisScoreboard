@@ -6,6 +6,8 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import model.Match;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import repository.MatchRepository;
 
 import java.io.IOException;
@@ -15,6 +17,7 @@ import java.util.List;
 public class MatchesServlet extends HttpServlet {
     private static final int LIMIT_ON_PAGE = 4;
     private final transient MatchRepository matchRepository = new MatchRepository();
+    private static final Logger logger = LoggerFactory.getLogger(MatchesServlet.class);
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -26,7 +29,7 @@ public class MatchesServlet extends HttpServlet {
                 page = Integer.parseInt(pageStr);
             }
         } catch (NumberFormatException e) {
-            //ignore
+            logger.warn("Некорректный параметр page: '{}'. Используется значение по умолчанию: 1", pageStr);
         }
 
         if (page < 1) {
