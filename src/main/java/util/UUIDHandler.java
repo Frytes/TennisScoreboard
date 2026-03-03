@@ -6,7 +6,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.UUID;
 
-public class UUIDHandler {
+public final class UUIDHandler {
     private UUIDHandler() {
     }
 
