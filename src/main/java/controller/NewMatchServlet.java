@@ -26,45 +26,45 @@ public class NewMatchServlet extends HttpServlet {
     }
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        String name1 = req.getParameter("player1");
-        String name2 = req.getParameter("player2");
+        String player1Name = req.getParameter("player1");
+        String player2Name = req.getParameter("player2");
 
-        if (name1 == null || name1.trim().isEmpty() || name2 == null || name2.trim().isEmpty()) {
-            showError(req, resp, "Имена игроков не могут быть пустыми", name1, name2);
+        if (player1Name == null || player1Name.trim().isEmpty() || player2Name == null || player2Name.trim().isEmpty()) {
+            showError(req, resp, "Имена игроков не могут быть пустыми", player1Name, player2Name);
             return;
         }
 
-        if (name1.trim().equalsIgnoreCase(name2.trim())) {
-            showError(req, resp, "Игрок не может играть сам с собой", name1, name2);
+        if (player1Name.trim().equalsIgnoreCase(player2Name.trim())) {
+            showError(req, resp, "Игрок не может играть сам с собой", player1Name, player2Name);
             return;
         }
 
         try {
             // Комент для ревьюера. В идеале обернуть тут в транзакию, но на голом jdbc это боль.
             // Оставил как есть, но в проде все же заморочился
-            Player player1 = playerRepository.findByName(name1)
-                    .orElseGet(() -> playerRepository.create(new Player(name1)));
+            Player player1 = playerRepository.findByName(player1Name)
+                    .orElseGet(() -> playerRepository.create(new Player(player1Name)));
 
-            Player player2 = playerRepository.findByName(name2)
-                    .orElseGet(() -> playerRepository.create(new Player(name2)));
+            Player player2 = playerRepository.findByName(player2Name)
+                    .orElseGet(() -> playerRepository.create(new Player(player2Name)));
 
             Match match = new Match(player1, player2);
             OngoingMatchesService.getInstance().add(match);
             resp.sendRedirect(req.getContextPath() + "/match-score?uuid=" + match.getUuid());
 
         } catch (DatabaseOperationException e) {
-            logger.error("Ошибка БД при создании матча между {} и {}", name1, name2, e);
-            showError(req, resp, "Ошибка базы данных. Попробуйте позже.", name1, name2);
+            logger.error("Ошибка БД при создании матча между {} и {}", player1Name, player2Name, e);
+            showError(req, resp, "Ошибка базы данных. Попробуйте позже.", player1Name, player2Name);
         } catch (Exception e) {
             logger.error("Критическая ошибка в NewMatchServlet", e);
-            showError(req, resp, "Внутренняя ошибка сервера.", name1, name2);
+            showError(req, resp, "Внутренняя ошибка сервера.", player1Name, player2Name);
         }
     }
 
-    private void showError(HttpServletRequest req, HttpServletResponse resp, String message, String name1, String name2) throws ServletException, IOException {
+    private void showError(HttpServletRequest req, HttpServletResponse resp, String message, String player1Name, String player2Name) throws ServletException, IOException {
         req.setAttribute("error", message);
-        req.setAttribute("player1", name1);
-        req.setAttribute("player2", name2);
+        req.setAttribute("player1", player1Name);
+        req.setAttribute("player2", player2Name);
         req.getRequestDispatcher("/new-match.jsp").forward(req, resp);
     }
 }
